@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# Development
+CMakeUserPresets.json
+build/
+out/
+ext/
+.cache/
+compile_commands.json
