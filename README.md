@@ -13,21 +13,33 @@ This project is a C++ remake of the classic Super Mario World game, utilizing th
 
 ## Requirements
 
-- [Visual Studio Code](https://code.visualstudio.com/)
-- C++ compiler compatible with C++20 standard.
-- Most recent CMake release.
-- BAVE 2D graphics engine (link to BAVE GitHub repository).
-- Additional dependencies (if any) listed in the BAVE documentation.
+- C++ IDE (recommended: [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/))
+- C++20 compiler and standard library.
+- CMake 3.23+.
 
-## NOTE: Project is currently being developed. It is not able to be run currently.
+## Building
 
-## Installation - Linux / UNIX
+### Visual Studio
+
+1. Use Open Folder and select the project root. (Or use Open CMake and select the CMakeLists.txt in the project root.)
+1. If using CMake presets, select `vs22`. Else select the build configuration (`x64-Debug` by default).
+1. Select the build and debug target (name of the executable, currently `cppSMW`).
+1. Build and debug/run.
+
+### VSCode
+
+1. Install related extensions such as clangd, CMake Tools, etc.
+1. Open the project root as a folder.
+1. Use the command palette (press Ctrl + Shift + P) and select "CMake: Configure". Select a preset: `default` or `ninja-ubsan` is recommended.
+1. Use "CMake: Build" to build, "CMake: Debug" to debug.
+
+## Installation - Linux / UNIX (TBD)
 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/super-mario-world-remake.git
-   cd super-mario-world-remake
+   git clone https://github.com/yourusername/super-mario-world-remake.git # this is incorrect
+   cd super-mario-world-remake # this is incorrect
 
 2. **Open the repository in VSCode:**
 
@@ -47,7 +59,7 @@ This project is a C++ remake of the classic Super Mario World game, utilizing th
    ```bash
    ./super_mario_world
 
-## Installation - Windows
+## Installation - Windows (TBD)
 
 1. **Clone the repository:**
    
