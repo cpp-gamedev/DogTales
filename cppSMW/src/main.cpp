@@ -19,8 +19,9 @@ class TestDriver : public Driver {
 	}
 
 	void render() const final {
-		if (auto shader = get_app().load_shader("shaders/default.vert", "shaders/default.frag")) { m_shape.draw(*shader); }
-	}
+		if (auto shader = get_app().load_shader("shaders/default.vert", "shaders/default.frag")) {
+			m_shape.draw(*shader);
+		}
 
   public:
 	explicit TestDriver(App& app) : Driver(app) { m_shape.set_shape(Quad{}); }
