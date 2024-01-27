@@ -5,7 +5,7 @@ int main(int argc, char** argv) {
 	auto create_info = bave::DesktopApp::CreateInfo{
 		.args = bave::make_args(argc, argv),
 		.title = "DogTales",
-		.extent = {1280, 720},
+		.mode = bave::Windowed{.extent = {1280, 720}},
 		.assets_patterns = "assets",
 	};
 
