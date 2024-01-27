@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
 
-project(cppSMW)
+project(DogTales)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,7 +17,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(bave)
 
-add_subdirectory(cppSMW)
+add_subdirectory(DogTales)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(compile_commands_path "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
