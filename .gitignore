@@ -38,3 +38,7 @@ out/
 ext/
 .cache/
 compile_commands.json
+
+# local IDE-generated folders
+.vs/
+.vscode/
