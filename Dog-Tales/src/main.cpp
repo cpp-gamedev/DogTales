@@ -32,7 +32,7 @@ class TestDriver : public Driver {
 int main(int argc, char** argv) {
 	auto create_info = DesktopApp::CreateInfo{
 		.args = bave::make_args(argc, argv),
-		.title = "SMW",
+		.title = "Dog-Tales",
 		.extent = {1280, 720},
 		.assets_patterns = "assets",
 	};
