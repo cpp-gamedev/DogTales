@@ -17,7 +17,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(bave)
 
-add_subdirectory(cppSMW)
+add_subdirectory(DogTales)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(compile_commands_path "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
