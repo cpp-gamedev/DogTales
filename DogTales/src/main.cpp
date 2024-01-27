@@ -1,5 +1,5 @@
 #include <bave/desktop_app.hpp>
-#include <src/DogTales.hpp>
+#include <src/dogtales.hpp>
 
 int main(int argc, char** argv) {
 	auto create_info = bave::DesktopApp::CreateInfo{
