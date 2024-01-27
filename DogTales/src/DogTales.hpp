@@ -8,5 +8,5 @@ class DogTales : public bave::Driver {
 	void render() const final;
 
   public:
-	explicit DogTales(bave::App& app) : Driver(app) { m_shape.set_shape(bave::Quad{}); }
+	explicit DogTales(bave::App& app);
 };
