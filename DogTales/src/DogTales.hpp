@@ -1,11 +1,14 @@
+#pragma once
 #include <bave/driver.hpp>
-#include <bave/graphics/shape.hpp>
+#include <src/player.hpp>
 
 class DogTales : public bave::Driver {
-	bave::QuadShape m_shape{};
+	std::optional<Player> m_player{};
+
+	void tick() final;
+	void render() const final;
 
 	void on_key(bave::KeyInput const& key_input) final;
-	void render() const final;
 
   public:
 	explicit DogTales(bave::App& app);
