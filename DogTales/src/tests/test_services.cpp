@@ -4,70 +4,71 @@
 
 namespace {
 namespace one {
-struct Foo : bave::Pinned {
+struct Foo : IService {
 	int value{};
 };
 } // namespace one
 
 namespace two {
-struct Foo : bave::Pinned {
+struct Foo : IService {
 	int value{};
 };
 } // namespace two
 
-ADD_TEST(ServicesTypeIntegrity) {
-	auto foo_one = one::Foo{};
-	foo_one.value = 1;
-	services::provide<one::Foo>(&foo_one);
+ADD_TEST(Services_TypeIntegrity) {
+	auto services = Services{};
 
-	auto foo_two = two::Foo{};
-	foo_two.value = 2;
-	services::provide<two::Foo>(&foo_two);
+	auto foo_one = std::make_unique<one::Foo>();
+	foo_one->value = 1;
+	services.bind<one::Foo>(std::move(foo_one));
 
-	ASSERT(services::contains<one::Foo>());
-	EXPECT(services::get<one::Foo>().value == 1);
-	ASSERT(services::contains<two::Foo>());
-	EXPECT(services::get<two::Foo>().value == 2);
+	auto foo_two = std::make_unique<two::Foo>();
+	foo_two->value = 2;
+	services.bind<two::Foo>(std::move(foo_two));
 
-	services::unprovide_all();
+	ASSERT(services.contains<one::Foo>());
+	EXPECT(services.get<one::Foo>().value == 1);
+	ASSERT(services.contains<two::Foo>());
+	EXPECT(services.get<two::Foo>().value == 2);
 }
 
-ADD_TEST(ServicesGetException) {
+ADD_TEST(Services_GetException) {
+	auto services = Services{};
 	auto thrown = false;
 	try {
-		[[maybe_unused]] auto& foo = services::get<one::Foo>();
+		[[maybe_unused]] auto& foo = services.get<one::Foo>();
 	} catch (FatalError const&) { thrown = true; }
 
 	EXPECT(thrown);
 }
 
-ADD_TEST(ServicesDuplicateException) {
-	auto foo = one::Foo{};
-	services::provide<one::Foo>(&foo);
+ADD_TEST(Services_DuplicateException) {
+	auto services = Services{};
+
+	services.bind<one::Foo>(std::make_unique<one::Foo>());
 
 	auto thrown = false;
 	try {
-		services::provide<one::Foo>(&foo);
+		services.bind<one::Foo>(std::make_unique<one::Foo>());
 	} catch (FatalError const&) { thrown = true; }
 
 	EXPECT(thrown);
-	services::unprovide_all();
 }
 
-ADD_TEST(ServicesCrtpService) {
-	struct Bar : CrtpService<Bar> {
-		int value{};
+ADD_TEST(Services_BindSubclass) {
+	auto services = Services{};
+
+	struct Interface : IService {
+		virtual auto get_value() -> int = 0;
 	};
 
-	{
-		auto bar = Bar{};
-		bar.value = 42;
+	struct Concrete : Interface {
+		auto get_value() -> int final { return 42; }
+	};
 
-		ASSERT(services::contains<Bar>());
-		EXPECT(services::get<Bar>().value == 42);
-	}
+	services.bind<Interface>(std::make_unique<Concrete>());
 
-	EXPECT(!services::contains<Bar>());
-	services::unprovide_all();
+	ASSERT(services.contains<Interface>());
+	EXPECT(services.get<Interface>().get_value() == 42);
 }
 } // namespace

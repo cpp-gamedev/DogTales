@@ -2,90 +2,89 @@
 #include <bave/core/not_null.hpp>
 #include <bave/core/ptr.hpp>
 #include <src/fatal_error.hpp>
+#include <src/services/service.hpp>
+#include <memory>
+#include <mutex>
 #include <typeindex>
+#include <unordered_map>
 
-/// \brief Concept for a serviceable type: it must be pinned since its address is stored.
+/// \brief Concept constraining Type to a subclass of IService.
 template <typename Type>
-concept ServiceT = !std::is_move_assignable_v<Type> && !std::is_copy_assignable_v<Type>;
+concept ServiceT = std::derived_from<Type, IService>;
 
-/// \brief Services are effectively globals, since any code anywhere can poke at them.
-/// The design employed here minimizes the negative effects of globals via:
-/// 1. Type safe service access / provision / unprovision.
-/// 2. No ownership of service objects.
-/// 3. Consolidated storage of all such globals (as opposed to singletons).
-/// 4. Batch removal of all provided services.
+/// \brief Container of stored services.
 ///
-/// Point 2 means that a service instance must actually be (uniquely) owned elsewhere.
-/// This provides deterministic lifetime of all services,
-/// as opposed to global storage, which pushes lifetimes beyond main's scope, and
-/// makes the initialization/destruction order unspecified wrt each other.
-namespace services {
-/// \brief Internal usage, do not use anything in detail directly.
-namespace detail {
-void provide(std::type_index index, void* obj);
-void unprovide(std::type_index index);
-[[nodiscard]] auto find(std::type_index index) -> void*;
-} // namespace detail
-
-/// \brief Provide a service by registering its address.
-/// \param obj Address of service object.
-/// \pre Type must not already be provided.
-template <ServiceT Type>
-void provide(bave::NotNull<Type*> obj) {
-	detail::provide(std::type_index{typeid(Type)}, obj.get());
-}
-
-/// \brief Unprovide a service. Safe to call even if service hasn't been provided.
-template <ServiceT Type>
-void unprovide() {
-	detail::unprovide(std::type_index{typeid(Type)});
-}
-
-/// \brief Unregister all provided services.
-void unprovide_all();
-
-/// \brief Obtain the count of provided services.
-[[nodiscard]] auto get_count() -> std::size_t;
-
-/// \brief Locate a service if provided.
-/// \returns Pointer to service instance if provided, nullptr otherwise.
-template <ServiceT Type>
-[[nodiscard]] auto find() -> bave::Ptr<Type> {
-	return static_cast<Type*>(detail::find(std::type_index{typeid(Type)}));
-}
-
-/// \brief Check if a service type has been provided.
-/// \returns true if provided.
-template <ServiceT Type>
-[[nodiscard]] auto contains() -> bool {
-	return find<Type>() != nullptr;
-}
-
-/// \brief Locate a provided service.
-/// \returns Reference to provided service instance.
-/// \pre Type must have been provided.
-template <ServiceT Type>
-[[nodiscard]] auto get() -> Type& {
-	auto* ret = find<Type>();
-	if (ret == nullptr) { throw FatalError{"Requested service not present"}; }
-	return *ret;
-}
-} // namespace services
-
-/// \brief CRTP base class for scoped (RAII) service types.
-///
-/// Usage:
-///  struct Foo : CrtpService<Foo> { /*...*/ };
-///  Creating a Foo instance will auto-provide Foo service.
-///  It will be unprovided on destruction.
-template <typename Type>
-class CrtpService {
+/// Intended usage:
+/// 1. Own an instance in main / app Driver.
+/// 2. Bind services to subclasses. (From and To being the same type is also OK.)
+/// 3. Pass a const reference of Services to dependencies
+/// Point 3 ensures dependencies cannot bind new / remove existing services,
+/// but can locate and use already bound ones.
+class Services {
   public:
-	CrtpService(CrtpService&&) = delete;
-	CrtpService(CrtpService const&) = delete;
-	auto operator=(CrtpService&&) -> CrtpService& = delete;
-	auto operator=(CrtpService const&) -> CrtpService& = delete;
+	/// \brief Bind a service instance to a type (From).
+	/// \param service Concrete instance of service to bind.
+	/// \pre service must not be null, From must not already be bound.
+	template <ServiceT From, std::derived_from<From> To>
+	void bind(std::unique_ptr<To> service) {
+		if (!service) { throw FatalError{"Attempt to bind null service"}; }
+		static auto const index = std::type_index{typeid(From)};
+		auto lock = std::scoped_lock{m_mutex};
+		if (m_services.contains(index)) { throw FatalError{"Attempt to bind duplicate service"}; }
+		m_services.insert_or_assign(index, std::move(service));
+	}
 
-	CrtpService() { services::provide<Type>(static_cast<Type*>(this)); }
-	~CrtpService() { services::unprovide<Type>(); }
+	/// \brief Remove a bound service instance. Type need not actually be bound.
+	template <ServiceT Type>
+	void remove() {
+		static auto const index = std::type_index{typeid(Type)};
+		auto lock = std::scoped_lock{m_mutex};
+		m_services.erase(index);
+	}
+
+	/// \brief Remove all bound service instances.
+	void remove_all() {
+		auto lock = std::scoped_lock{m_mutex};
+		m_services.clear();
+	}
+
+	/// \brief Check if a service is bound.
+	/// \returns true if bound.
+	template <ServiceT Type>
+	[[nodiscard]] auto contains() const -> bool {
+		return find<Type>() != nullptr;
+	}
+
+	/// \brief Locate a service instance if bound.
+	/// \returns Pointer to service instance if bound, else nullptr.
+	template <ServiceT Type>
+	[[nodiscard]] auto find() const -> bave::Ptr<Type> {
+		static auto const index = std::type_index{typeid(Type)};
+		auto lock = std::scoped_lock{m_mutex};
+		if (auto const it = m_services.find(index); it != m_services.end()) {
+			return static_cast<Type*>(it->second.get());
+		}
+		return {};
+	}
+
+	/// \brief Obtain a bound service.
+	/// \returns Mutable reference to bound service.
+	/// \pre Type must be bound.
+	template <ServiceT Type>
+	[[nodiscard]] auto get() const -> Type& {
+		auto ret = find<Type>();
+		if (!ret) { throw FatalError{"Service not found"}; }
+		return *ret;
+	}
+
+	/// \brief Obtain the count of bound services.
+	/// \returns Count of bound services.
+	[[nodiscard]] auto size() const -> std::size_t {
+		auto lock = std::scoped_lock{m_mutex};
+		return m_services.size();
+	}
+
+  private:
+	std::unordered_map<std::type_index, std::unique_ptr<IService>> m_services{};
+	mutable std::mutex m_mutex{};
 };
