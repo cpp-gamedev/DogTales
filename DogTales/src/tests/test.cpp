@@ -1,6 +1,6 @@
+#include <fmt/format.h>
 #include <src/tests/test.hpp>
 #include <filesystem>
-#include <format>
 #include <iostream>
 #include <vector>
 
@@ -9,7 +9,7 @@ namespace {
 struct Assert {};
 
 void print_failure(std::string_view type, std::string_view expr, std::source_location const& sl) {
-	std::cerr << std::format("  {} failed: '{}' [{}:{}]\n", type, expr,
+	std::cerr << fmt::format("  {} failed: '{}' [{}:{}]\n", type, expr,
 							 std::filesystem::path{sl.file_name()}.filename().string(), sl.line());
 }
 
@@ -31,14 +31,14 @@ auto run_test(Test& test) -> bool {
 		test.run();
 	} catch (Assert) {
 	} catch (std::exception const& e) {
-		std::cerr << std::format("exception caught: {}\n", e.what());
+		std::cerr << fmt::format("exception caught: {}\n", e.what());
 		g_failed = true;
 	}
 	if (g_failed) {
-		std::cerr << std::format("[FAILED] {}\n", test.get_name());
+		std::cerr << fmt::format("[FAILED] {}\n", test.get_name());
 		return false;
 	}
-	std::cout << std::format("[passed] {}\n", test.get_name());
+	std::cout << fmt::format("[passed] {}\n", test.get_name());
 	return true;
 }
 } // namespace
