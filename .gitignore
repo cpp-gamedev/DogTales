@@ -42,3 +42,7 @@ compile_commands.json
 # local IDE-generated folders
 .vs/
 .vscode/
+
+# Generated files
+imgui.ini
+bave.log
