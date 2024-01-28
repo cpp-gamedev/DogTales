@@ -2,6 +2,7 @@
 #include <bave/desktop_app.hpp>
 #include <src/build_version.hpp>
 #include <src/dogtales.hpp>
+#include <src/tests/test.hpp>
 #include <iostream>
 
 namespace {
@@ -13,7 +14,9 @@ auto parse_args(int const argc, char const* const* argv) -> std::optional<int> {
 	auto options = clap::Options{std::move(name), std::move(description), std::move(version)};
 
 	auto show_bave_version = false;
+	auto run_tests = false;
 	options.flag(show_bave_version, "bave-version", "show bave version");
+	options.flag(run_tests, "t,run-tests", "run DogTales tests");
 
 	auto const result = options.parse(argc, argv);
 	if (clap::should_quit(result)) { return clap::return_code(result); }
@@ -22,6 +25,8 @@ auto parse_args(int const argc, char const* const* argv) -> std::optional<int> {
 		std::cout << "bave version " << bave::to_string(bave::build_version_v) << "\n";
 		return EXIT_SUCCESS;
 	}
+
+	if (run_tests) { return test::run_tests(); }
 
 	return {};
 }

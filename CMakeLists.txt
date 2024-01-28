@@ -29,3 +29,6 @@ if(EXISTS "${compile_commands_path}")
   message(STATUS "Copying compile_commands.json from ${compile_commands_path}")
   file(COPY "${compile_commands_path}" DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}")
 endif()
+
+enable_testing()
+add_test(NAME DogTalesUnitTests COMMAND DogTales -t)
