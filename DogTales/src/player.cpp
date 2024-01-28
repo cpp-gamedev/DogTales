@@ -13,8 +13,9 @@ void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
 void Player::handle_wall_collision() {
 	auto& position = m_sprite.transform.position;
 	// bounce_rect represents the play area for the sprite, ie the limits for its centre.
-	// this is simply the total space minus the sprite size.
-	auto const bounce_rect = bave::Rect<>::from_size(m_world_space - m_sprite.get_size());
+	// the size is simply the total space minus the sprite size, centered at the origin.
+	// the second argument (glm::vec2{0.0f}) is the default value and can be omitted here.
+	auto const bounce_rect = bave::Rect<>::from_size(m_world_space - m_sprite.get_size(), glm::vec2{0.0f});
 
 	// if the sprite's position exceeds the play area, the corresponding velocity component needs to flip.
 	if (position.x < bounce_rect.top_left().x || position.x > bounce_rect.bottom_right().x) { m_vel.x *= -1.0f; }

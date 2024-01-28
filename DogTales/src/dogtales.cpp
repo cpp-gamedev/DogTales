@@ -9,7 +9,7 @@ void DogTales::tick() {
 }
 
 void DogTales::render() const {
-	set_viewport_to_world_space(); // stretch sprites to fit the framebuffer, fixed sized world space
+	set_viewport_to_world_space(); // stretch sprites to fit the fixed sized world space.
 
 	if (auto shader = get_app().load_shader("shaders/default.vert", "shaders/default.frag")) { m_player.draw(*shader); }
 }
