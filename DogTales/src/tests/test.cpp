@@ -1,4 +1,4 @@
-#include <test/test.hpp>
+#include <src/tests/test.hpp>
 #include <filesystem>
 #include <format>
 #include <iostream>
@@ -9,7 +9,8 @@ namespace {
 struct Assert {};
 
 void print_failure(std::string_view type, std::string_view expr, std::source_location const& sl) {
-	std::cerr << std::format("  {} failed: '{}' [{}:{}]\n", type, expr, std::filesystem::path{sl.file_name()}.filename().string(), sl.line());
+	std::cerr << std::format("  {} failed: '{}' [{}:{}]\n", type, expr,
+							 std::filesystem::path{sl.file_name()}.filename().string(), sl.line());
 }
 
 bool g_failed{}; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
@@ -22,20 +23,6 @@ void set_failure(std::string_view type, std::string_view expr, std::source_locat
 auto get_tests() -> std::vector<Test*>& {
 	static auto ret = std::vector<Test*>{};
 	return ret;
-}
-} // namespace
-
-Test::Test() { get_tests().push_back(this); }
-
-void Test::do_expect(bool pred, std::string_view expr, std::source_location const& location) {
-	if (pred) { return; }
-	set_failure("expectation", expr, location);
-}
-
-void Test::do_assert(bool pred, std::string_view expr, std::source_location const& location) {
-	if (pred) { return; }
-	set_failure("assertion", expr, location);
-	throw Assert{};
 }
 
 auto run_test(Test& test) -> bool {
@@ -54,9 +41,23 @@ auto run_test(Test& test) -> bool {
 	std::cout << std::format("[passed] {}\n", test.get_name());
 	return true;
 }
+} // namespace
+
+Test::Test() { get_tests().push_back(this); }
+
+void Test::do_expect(bool pred, std::string_view expr, std::source_location const& location) {
+	if (pred) { return; }
+	set_failure("expectation", expr, location);
+}
+
+void Test::do_assert(bool pred, std::string_view expr, std::source_location const& location) {
+	if (pred) { return; }
+	set_failure("assertion", expr, location);
+	throw Assert{};
+}
 } // namespace test
 
-auto main() -> int {
+auto test::run_tests() -> int {
 	auto ret = EXIT_SUCCESS;
 	for (auto* test : test::get_tests()) {
 		if (!run_test(*test)) { ret = EXIT_FAILURE; }
