@@ -5,7 +5,8 @@
 class DogTales : public bave::Driver {
 	static constexpr glm::vec2 world_space_v{1280.0f, 720.0f};
 
-	Player m_player{world_space_v};
+	Player m_player{world_space_v, get_app()};
+
 
 	void tick() final;
 	void render() const final;

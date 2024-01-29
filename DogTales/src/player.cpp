@@ -1,14 +1,62 @@
 #include <src/player.hpp>
 
-Player::Player(glm::vec2 const world_space) : m_world_space(world_space) { m_sprite.set_size(size_v); }
+#include <imgui.h>
 
-void Player::tick(bave::Seconds const dt) {
-	m_sprite.transform.position += m_vel * dt.count();
 
-	handle_wall_collision();
+
+Player::Player(glm::vec2 const world_space, bave::App& app) : m_world_space(world_space), m_app(app) {
+	m_sprite.set_size(size_v);
+	m_position.position = {0, 0};
+	m_sprite.transform = m_position;
+	m_collider = bave::Rect<float>::from_size(m_sprite.get_size(), m_position.position);
 }
 
-void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
+void Player::tick(bave::Seconds const dt) {
+
+	handle_wall_collision();
+
+	reduce_velocity();
+
+
+	ImGui::Begin("Player");
+	ImGui::Text("World Space: (%.2f, %.2f)", m_world_space.x, m_world_space.y);
+	ImGui::Text("Player Position: (%.2f, %.2f)", m_position.position.x, m_position.position.y);
+	ImGui::Text("Sprite Position: (%.2f, %.2f)", m_sprite.transform.position.x, m_sprite.transform.position.y);
+	ImGui::Text("Collider Position: (%.2f, %.2f)", m_collider.top_left().x, m_collider.top_left().y);
+	ImGui::Text("Velocity: (%.2f, %.2f)", m_vel.x, m_vel.y);
+	ImGui::End();
+
+
+}
+
+
+void Player::move(glm::vec2 const& dir)
+{
+	auto const dt = m_app.get_dt();
+	float const velocity = speed_v.x * dt.count();
+
+	m_position.position += dir * velocity;
+	m_sprite.transform.position = m_position.position;
+	//m_collider.lt = m_position.position;
+	//m_collider = bave::Rect<float>::from_size(m_sprite.get_size(), m_position.position);
+
+}
+
+void Player::reduce_velocity() {
+	m_vel *= 0.99F;
+}
+
+void Player::draw(bave::Shader& shader) const {
+	m_sprite.draw(shader);
+
+
+}
+
+
+
+void Player::handle_wall_collision2() {
+
+}
 
 void Player::handle_wall_collision() {
 	auto& position = m_sprite.transform.position;
@@ -25,3 +73,5 @@ void Player::handle_wall_collision() {
 	// bottom_left() gives us the minimum x and y whereas top_right() gives us the maximum.
 	position = glm::clamp(position, bounce_rect.bottom_left(), bounce_rect.top_right());
 }
+
+

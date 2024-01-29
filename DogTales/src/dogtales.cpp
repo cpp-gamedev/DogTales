@@ -1,6 +1,8 @@
 #include <src/dogtales.hpp>
 
-DogTales::DogTales(bave::App& app) : bave::Driver(app) {}
+DogTales::DogTales(bave::App& app) : bave::Driver(app) {
+
+}
 
 void DogTales::tick() {
 	auto const dt = get_app().get_dt();
@@ -15,9 +17,30 @@ void DogTales::render() const {
 }
 
 void DogTales::on_key(bave::KeyInput const& key_input) {
+
 	if (key_input.key == bave::Key::eEscape && key_input.action == bave::Action::eRelease) { get_app().shutdown(); }
+
+	float speed = 10.0F;
+
+	if (key_input.key == bave::Key::eW) { m_player.move(glm::vec2{0.0f, speed}); }
+	if (key_input.key == bave::Key::eA) { m_player.move(glm::vec2{-speed, 0.0f}); }
+	if (key_input.key == bave::Key::eS) { m_player.move(glm::vec2{0.0f, -speed}); }
+	if (key_input.key == bave::Key::eD) { m_player.move(glm::vec2{speed, 0.0f}); }
 }
 
+/*
+void DogTales::on_key(bave::KeyInput const& key_input) {
+
+	if (key_input.key == bave::Key::eEscape && key_input.action == bave::Action::eRelease) { get_app().shutdown(); }
+
+	float speed = 10.0F;
+
+	if (key_input.key == bave::Key::eW) { m_player.move(glm::vec2{0.0f, speed}); }
+	if (key_input.key == bave::Key::eA) { m_player.move(glm::vec2{-speed, 0.0f}); }
+	if (key_input.key == bave::Key::eS) { m_player.move(glm::vec2{0.0f, -speed}); }
+	if (key_input.key == bave::Key::eD) { m_player.move(glm::vec2{speed, 0.0f}); }
+}
+*/
 void DogTales::set_viewport_to_world_space() const {
 	get_app().get_render_device().render_view.viewport = world_space_v;
 }
