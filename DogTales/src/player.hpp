@@ -12,11 +12,24 @@ class Player {
 
 	glm::vec2 m_vel{speed_v};
 
+	// X and Y postitions of the player.
+	float m_x_pos{};
+	float m_y_pos{};
+
+	// X and Y speeds of the player.
+	float m_x_speed{};
+	float m_y_speed{};
+
+	static constexpr float groundLevel = 0.0f;
+
 	void handle_wall_collision();
 
   public:
 	explicit Player(glm::vec2 world_space);
 
+	void handle_input(bave::KeyInput const& key_input);
+
 	void tick(bave::Seconds dt);
 	void draw(bave::Shader& shader) const;
+	void update_movement(float dx, float dy);
 };
