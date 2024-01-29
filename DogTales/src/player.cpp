@@ -1,11 +1,9 @@
 #include <src/player.hpp>
 
-Player::Player(glm::vec2 const world_space) : m_world_space(world_space), m_vel(0.0f, 0.0f) {
-	m_sprite.set_size(size_v);
-}
+Player::Player(glm::vec2 const world_space) : m_world_space(world_space) { m_sprite.set_size(size_v); }
 
 void Player::tick(bave::Seconds const dt) {
-	// Update the player's position based on velocity.
+	// Update the player's movement based on velocity.
 	m_sprite.transform.position += m_vel * dt.count();
 
 	handle_wall_collision();
@@ -13,24 +11,26 @@ void Player::tick(bave::Seconds const dt) {
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
 
-void Player::update_movement(float dx, float dy) {
-	// Modify the player's movement based on the specified direction.
-	// Adjust this function based on your game logic.
-	m_vel.x = dx * speed_v.x;
-	m_vel.y = dy * speed_v.y;
+void Player::update_movement(glm::vec2 const& direction) {
+	// Normalize the direction vector
+	glm::vec2 normalized_direction = glm::normalize(direction);
+
+	// Apply speed to the normalized direction vector
+	m_vel = normalized_direction * speed_v;
 }
 
 void Player::handle_input(bave::KeyInput const& key_input) {
-	// Update the velocity based on WASD input
-	if (key_input.key == bave::Key::eW) {
-		update_movement(0, 1);
-	} else if (key_input.key == bave::Key::eA) {
-		update_movement(-1, 0);
-	} else if (key_input.key == bave::Key::eS) {
-		update_movement(0, -1);
-	} else if (key_input.key == bave::Key::eD) {
-		update_movement(1, 0);
-	}
+	// Mapping keys to direction offsets
+	std::unordered_map<bave::Key, glm::vec2> keyMappings{
+		{bave::Key::eW, {0.0f, 1.0f}},
+		{bave::Key::eA, {-1.0f, 0.0f}},
+		{bave::Key::eS, {0.0f, -1.0f}},
+		{bave::Key::eD, {1.0f, 0.0f}},
+	};
+
+	// Check if the pressed key has a corresponding direction in the map
+	auto it = keyMappings.find(key_input.key);
+	if (it != keyMappings.end()) { update_movement(it->second); }
 }
 
 void Player::handle_wall_collision() {

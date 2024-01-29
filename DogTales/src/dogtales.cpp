@@ -1,5 +1,4 @@
 #include <src/dogtales.hpp>
-#include "bave/input/action.hpp"
 
 DogTales::DogTales(bave::App& app) : bave::Driver(app) {}
 

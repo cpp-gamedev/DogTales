@@ -1,6 +1,7 @@
 #pragma once
 #include <bave/app.hpp>
 #include <bave/graphics/sprite.hpp>
+#include <unordered_set>
 
 class Player {
 	static constexpr glm::vec2 speed_v{500.0f, 500.0f};
@@ -10,17 +11,7 @@ class Player {
 
 	bave::Sprite m_sprite{};
 
-	glm::vec2 m_vel{speed_v};
-
-	// X and Y postitions of the player.
-	float m_x_pos{};
-	float m_y_pos{};
-
-	// X and Y speeds of the player.
-	float m_x_speed{};
-	float m_y_speed{};
-
-	static constexpr float groundLevel = 0.0f;
+	glm::vec2 m_vel{};
 
 	void handle_wall_collision();
 
@@ -31,5 +22,5 @@ class Player {
 
 	void tick(bave::Seconds dt);
 	void draw(bave::Shader& shader) const;
-	void update_movement(float dx, float dy);
+	void update_movement(glm::vec2 const& direction);
 };
