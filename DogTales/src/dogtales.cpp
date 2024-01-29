@@ -16,6 +16,8 @@ void DogTales::render() const {
 
 void DogTales::on_key(bave::KeyInput const& key_input) {
 	if (key_input.key == bave::Key::eEscape && key_input.action == bave::Action::eRelease) { get_app().shutdown(); }
+
+	m_player.handle(key_input);
 }
 
 void DogTales::set_viewport_to_world_space() const {
