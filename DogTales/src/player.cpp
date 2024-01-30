@@ -5,7 +5,7 @@ Player::Player(glm::vec2 const world_space) : m_world_space(world_space) { m_spr
 void Player::tick(bave::Seconds const dt) {
 
 	m_physics.tick(dt);
-	m_sprite.transform.position = m_physics.m_position;
+	m_sprite.transform.position = m_physics.position;
 
 	handle_wall_collision();
 }

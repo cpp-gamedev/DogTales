@@ -4,25 +4,31 @@
 
 namespace component {
 
-static constexpr glm::vec2 max_velocity{1000.f, 1000.f};
-static constexpr float tick_limit{0.03f}; //this should possibly go somewhere else and be globally accessible
+constexpr glm::vec2 default_friction{0.999f};
+constexpr float default_gravity{-1000.f};
+constexpr float default_mass{1.f};
+
+constexpr glm::vec2 max_velocity_v{1000.f};
+constexpr bave::Seconds tick_limit_v{100ms};
 
 class Physics {
 
+	bave::Seconds m_residue{};
+
   public:
 
-	glm::vec2 m_position{};
-	glm::vec2 m_velocity{};
-	glm::vec2 m_acceleration{};
-	
-	glm::vec2 m_friction{};
-	float m_gravity{};
-	float m_mass{};
+	Physics(glm::vec2 fric = default_friction, float grav = default_gravity, float m = default_mass) : friction(fric), gravity(grav), mass(m) {}
 
-	Physics(glm::vec2 friction, float gravity, float mass = 1.f);
+	glm::vec2 position{};
+	glm::vec2 velocity{};
+	glm::vec2 acceleration{};
 
-	void tick(bave::Seconds const dt);
-	void integrate(float dt);
+	glm::vec2 friction{};
+	float gravity{};
+	float mass{};
+
+	void tick(bave::Seconds dt);
+	void integrate(bave::Seconds dt);
 };
 
 } // namespace component
