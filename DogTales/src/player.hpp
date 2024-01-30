@@ -1,6 +1,7 @@
 #pragma once
 #include <bave/app.hpp>
 #include <bave/graphics/sprite.hpp>
+#include "components/physics.hpp"
 
 class Player {
 	static constexpr glm::vec2 speed_v{500.0f, 500.0f};
@@ -10,7 +11,7 @@ class Player {
 
 	bave::Sprite m_sprite{};
 
-	glm::vec2 m_vel{speed_v};
+	component::Physics m_physics{};
 
 	void handle_wall_collision();
 
