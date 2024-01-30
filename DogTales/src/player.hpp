@@ -11,7 +11,6 @@ class Player {
 
 	bave::Sprite m_sprite{};
 
-	glm::vec2 m_vel{speed_v};
 	component::Physics m_physics{};
 
 	void handle_wall_collision();

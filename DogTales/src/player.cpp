@@ -8,6 +8,7 @@ void Player::tick(bave::Seconds const dt) {
 	m_sprite.transform.position = m_physics.position;
 
 	handle_wall_collision();
+	m_physics.position = m_sprite.transform.position;
 }
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
@@ -20,8 +21,8 @@ void Player::handle_wall_collision() {
 	auto const bounce_rect = bave::Rect<>::from_size(m_world_space - m_sprite.get_size(), glm::vec2{0.0f});
 
 	// if the sprite's position exceeds the play area, the corresponding velocity component needs to flip.
-	if (position.x < bounce_rect.top_left().x || position.x > bounce_rect.bottom_right().x) { m_vel.x *= -1.0f; }
-	if (position.y > bounce_rect.top_left().y || position.y < bounce_rect.bottom_right().y) { m_vel.y *= -1.0f; }
+	if (position.x < bounce_rect.top_left().x || position.x > bounce_rect.bottom_right().x) { m_physics.velocity.x *= -0.9f; }
+	if (position.y > bounce_rect.top_left().y || position.y < bounce_rect.bottom_right().y) { m_physics.velocity.y *= -0.9f; }
 
 	// clamp the position to the play area.
 	// bottom_left() gives us the minimum x and y whereas top_right() gives us the maximum.
