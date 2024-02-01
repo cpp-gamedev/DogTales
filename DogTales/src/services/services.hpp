@@ -27,10 +27,10 @@ class Services {
 	/// \pre service must not be null, From must not already be bound.
 	template <ServiceT From, std::derived_from<From> To>
 	void bind(std::unique_ptr<To> service) {
-		if (!service) { throw FatalError{"Attempt to bind null service"}; }
+		if (!service) { throw dog::FatalError{"Attempt to bind null service"}; }
 		static auto const index = std::type_index{typeid(From)};
 		auto lock = std::scoped_lock{m_mutex};
-		if (m_services.contains(index)) { throw FatalError{"Attempt to bind duplicate service"}; }
+		if (m_services.contains(index)) { throw dog::FatalError{"Attempt to bind duplicate service"}; }
 		m_services.insert_or_assign(index, std::move(service));
 	}
 
@@ -73,7 +73,7 @@ class Services {
 	template <ServiceT Type>
 	[[nodiscard]] auto get() const -> Type& {
 		auto ret = find<Type>();
-		if (!ret) { throw FatalError{"Service not found"}; }
+		if (!ret) { throw dog::FatalError{"Service not found"}; }
 		return *ret;
 	}
 

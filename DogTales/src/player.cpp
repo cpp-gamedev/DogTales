@@ -1,5 +1,7 @@
 #include <src/player.hpp>
 
+namespace dog {
+
 Player::Player(glm::vec2 const world_space) : m_world_space(world_space) { m_sprite.set_size(size_v); }
 
 void Player::tick(bave::Seconds const dt) {
@@ -21,10 +23,16 @@ void Player::handle_wall_collision() {
 	auto const bounce_rect = bave::Rect<>::from_size(m_world_space - m_sprite.get_size(), glm::vec2{0.0f});
 
 	// if the sprite's position exceeds the play area, the corresponding velocity component needs to flip.
-	if (position.x < bounce_rect.top_left().x || position.x > bounce_rect.bottom_right().x) { m_physics.velocity.x *= -0.9f; }
-	if (position.y > bounce_rect.top_left().y || position.y < bounce_rect.bottom_right().y) { m_physics.velocity.y *= -0.9f; }
+	if (position.x < bounce_rect.top_left().x || position.x > bounce_rect.bottom_right().x) {
+		m_physics.velocity.x *= -0.9f;
+	}
+	if (position.y > bounce_rect.top_left().y || position.y < bounce_rect.bottom_right().y) {
+		m_physics.velocity.y *= -0.9f;
+	}
 
 	// clamp the position to the play area.
 	// bottom_left() gives us the minimum x and y whereas top_right() gives us the maximum.
 	position = glm::clamp(position, bounce_rect.bottom_left(), bounce_rect.top_right());
 }
+
+} // namespace dog

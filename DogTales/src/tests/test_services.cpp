@@ -37,7 +37,7 @@ ADD_TEST(Services_GetException) {
 	auto thrown = false;
 	try {
 		[[maybe_unused]] auto& foo = services.get<one::Foo>();
-	} catch (FatalError const&) { thrown = true; }
+	} catch (dog::FatalError const&) { thrown = true; }
 
 	EXPECT(thrown);
 }
@@ -50,7 +50,7 @@ ADD_TEST(Services_DuplicateException) {
 	auto thrown = false;
 	try {
 		services.bind<one::Foo>(std::make_unique<one::Foo>());
-	} catch (FatalError const&) { thrown = true; }
+	} catch (dog::FatalError const&) { thrown = true; }
 
 	EXPECT(thrown);
 }

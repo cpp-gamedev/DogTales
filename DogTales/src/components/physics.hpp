@@ -2,6 +2,8 @@
 #include <bave/app.hpp>
 #include <bave/graphics/sprite.hpp>
 
+namespace dog {
+
 namespace component {
 
 class Physics {
@@ -16,8 +18,8 @@ class Physics {
 	bave::Seconds m_residue{};
 
   public:
-
-	Physics(glm::vec2 friction = default_friction, float gravity = default_gravity, float mass = default_mass) : friction(friction), gravity(gravity), mass(mass) {}
+	Physics(glm::vec2 friction = default_friction, float gravity = default_gravity, float mass = default_mass)
+		: friction(friction), gravity(gravity), mass(mass) {}
 
 	glm::vec2 position{};
 	glm::vec2 velocity{};
@@ -32,3 +34,5 @@ class Physics {
 };
 
 } // namespace component
+
+} // namespace dog
