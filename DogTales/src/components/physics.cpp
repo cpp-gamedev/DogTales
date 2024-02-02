@@ -5,7 +5,9 @@ namespace component {
 void Physics::tick(bave::Seconds dt) {
 	static constexpr bave::Seconds ft{0.005}; // 5ms
 
-	if (dt.count() > tick_limit_v.count()) { return; } // return for unexpected dt values, particularly during the beginning of the state
+	if (dt.count() > tick_limit_v.count()) {
+		return;
+	} // return for unexpected dt values, particularly during the beginning of the state
 
 	for (dt += m_residue; dt > ft; dt -= ft) { integrate(ft); }
 	m_residue = dt;
