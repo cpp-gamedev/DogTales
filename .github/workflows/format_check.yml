@@ -1,4 +1,4 @@
-name: format-check
+name: ci
 on: [push]
 jobs:
   format-check:
