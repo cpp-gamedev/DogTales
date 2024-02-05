@@ -1,8 +1,8 @@
 #pragma once
 #include <bave/core/not_null.hpp>
 #include <bave/core/ptr.hpp>
-#include <src/fatal_error.hpp>
-#include <src/services/service.hpp>
+#include <dog/fatal_error.hpp>
+#include <dog/services/service.hpp>
 #include <memory>
 #include <mutex>
 #include <typeindex>

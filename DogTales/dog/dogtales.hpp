@@ -1,6 +1,6 @@
 #pragma once
 #include <bave/driver.hpp>
-#include <src/player.hpp>
+#include <dog/player.hpp>
 
 namespace dog {
 class DogTales : public bave::Driver {
