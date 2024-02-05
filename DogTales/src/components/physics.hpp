@@ -2,8 +2,7 @@
 #include <bave/app.hpp>
 #include <bave/graphics/sprite.hpp>
 
-namespace component {
-
+namespace dog::component {
 class Physics {
 
 	static constexpr glm::vec2 default_friction{0.99f};
@@ -30,5 +29,4 @@ class Physics {
 	void tick(bave::Seconds dt);
 	void integrate(bave::Seconds dt);
 };
-
-} // namespace component
+} // namespace dog::component

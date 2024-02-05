@@ -41,7 +41,7 @@ auto run_app(int const argc, char const* const* argv) -> int {
 
 	auto app = bave::DesktopApp{create_info};
 
-	app.set_bootloader([](bave::App& app) { return std::make_unique<DogTales>(app); });
+	app.set_bootloader([](bave::App& app) { return std::make_unique<dog::DogTales>(app); });
 
 	return static_cast<int>(app.run());
 }

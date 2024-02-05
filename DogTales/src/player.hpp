@@ -3,6 +3,7 @@
 #include <bave/graphics/sprite.hpp>
 #include "components/physics.hpp"
 
+namespace dog {
 class Player {
 	static constexpr glm::vec2 speed_v{500.0f, 500.0f};
 	static constexpr glm::vec2 size_v{50.0f, 90.0f};
@@ -21,3 +22,4 @@ class Player {
 	void tick(bave::Seconds dt);
 	void draw(bave::Shader& shader) const;
 };
+} // namespace dog
