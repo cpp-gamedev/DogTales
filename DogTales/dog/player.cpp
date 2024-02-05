@@ -1,4 +1,4 @@
-#include <src/player.hpp>
+#include <dog/player.hpp>
 
 namespace dog {
 Player::Player(glm::vec2 const world_space) : m_world_space(world_space) { m_sprite.set_size(size_v); }

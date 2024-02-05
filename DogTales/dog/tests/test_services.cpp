@@ -1,6 +1,6 @@
 #include <bave/core/pinned.hpp>
-#include <src/services/services.hpp>
-#include <src/tests/test.hpp>
+#include <dog/services/services.hpp>
+#include <dog/tests/test.hpp>
 
 namespace dog {
 namespace {

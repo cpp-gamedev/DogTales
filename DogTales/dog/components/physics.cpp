@@ -1,4 +1,4 @@
-#include <src/components/physics.hpp>
+#include <dog/components/physics.hpp>
 
 namespace dog::component {
 

@@ -1,4 +1,4 @@
-#include <src/dogtales.hpp>
+#include <dog/dogtales.hpp>
 
 namespace dog {
 DogTales::DogTales(bave::App& app) : bave::Driver(app) {}

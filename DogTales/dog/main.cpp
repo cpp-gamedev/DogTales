@@ -1,8 +1,8 @@
 #include <bave/clap/clap.hpp>
 #include <bave/desktop_app.hpp>
-#include <src/build_version.hpp>
-#include <src/dogtales.hpp>
-#include <src/tests/test.hpp>
+#include <dog/build_version.hpp>
+#include <dog/dogtales.hpp>
+#include <dog/tests/test.hpp>
 #include <iostream>
 
 namespace {
