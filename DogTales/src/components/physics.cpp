@@ -1,8 +1,6 @@
 #include <src/components/physics.hpp>
 
-namespace dog {
-
-namespace component {
+namespace dog::component {
 
 void Physics::tick(bave::Seconds dt) {
 	static constexpr bave::Seconds ft{0.005}; // 5ms
@@ -23,7 +21,4 @@ void Physics::integrate(bave::Seconds dt) {
 
 	position += velocity * dt.count();
 }
-
-} // namespace component
-
-} // namespace dog
+} // namespace dog::component

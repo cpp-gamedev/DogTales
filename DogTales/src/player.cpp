@@ -1,7 +1,6 @@
 #include <src/player.hpp>
 
 namespace dog {
-
 Player::Player(glm::vec2 const world_space) : m_world_space(world_space) { m_sprite.set_size(size_v); }
 
 void Player::tick(bave::Seconds const dt) {
@@ -34,5 +33,4 @@ void Player::handle_wall_collision() {
 	// bottom_left() gives us the minimum x and y whereas top_right() gives us the maximum.
 	position = glm::clamp(position, bounce_rect.bottom_left(), bounce_rect.top_right());
 }
-
 } // namespace dog

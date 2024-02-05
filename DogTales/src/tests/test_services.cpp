@@ -2,6 +2,7 @@
 #include <src/services/services.hpp>
 #include <src/tests/test.hpp>
 
+namespace dog {
 namespace {
 namespace one {
 struct Foo : IService {
@@ -72,3 +73,4 @@ ADD_TEST(Services_BindSubclass) {
 	EXPECT(services.get<Interface>().get_value() == 42);
 }
 } // namespace
+} // namespace dog

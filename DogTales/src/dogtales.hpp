@@ -3,7 +3,6 @@
 #include <src/player.hpp>
 
 namespace dog {
-
 class DogTales : public bave::Driver {
 	static constexpr glm::vec2 world_space_v{1280.0f, 720.0f};
 
@@ -19,5 +18,4 @@ class DogTales : public bave::Driver {
   public:
 	explicit DogTales(bave::App& app);
 };
-
 } // namespace dog

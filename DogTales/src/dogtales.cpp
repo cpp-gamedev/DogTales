@@ -1,7 +1,6 @@
 #include <src/dogtales.hpp>
 
 namespace dog {
-
 DogTales::DogTales(bave::App& app) : bave::Driver(app) {}
 
 void DogTales::tick() {
@@ -23,5 +22,4 @@ void DogTales::on_key(bave::KeyInput const& key_input) {
 void DogTales::set_viewport_to_world_space() const {
 	get_app().get_render_device().render_view.viewport = world_space_v;
 }
-
 } // namespace dog

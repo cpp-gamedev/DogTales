@@ -8,6 +8,7 @@
 #include <typeindex>
 #include <unordered_map>
 
+namespace dog {
 /// \brief Concept constraining Type to a subclass of IService.
 template <typename Type>
 concept ServiceT = std::derived_from<Type, IService>;
@@ -88,3 +89,4 @@ class Services {
 	std::unordered_map<std::type_index, std::unique_ptr<IService>> m_services{};
 	mutable std::mutex m_mutex{};
 };
+} // namespace dog
