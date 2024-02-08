@@ -10,21 +10,20 @@ void Player::tick(bave::Seconds const dt) {
 	// m_physics.tick(dt);
 	// m_sprite.transform.position = m_physics.position;
 
-	// m_physics.position = m_sprite.transform.position;
 	auto const& key_state = m_app.get_key_state();
-	auto d_x_y = glm::vec2{};
-	if (key_state.is_pressed(bave::Key::eW)) { d_x_y.y += 1.0f; }
-	if (key_state.is_pressed(bave::Key::eS)) { d_x_y.y -= 1.0f; }
-	if (key_state.is_pressed(bave::Key::eA)) { d_x_y.x -= 1.0f; }
-	if (key_state.is_pressed(bave::Key::eD)) { d_x_y.x += 1.0f; }
+	auto direction = glm::vec2{};
+	if (key_state.is_pressed(bave::Key::eW) || key_state.is_pressed(bave::Key::eUp)) { direction.y += 1.0f; }
+	if (key_state.is_pressed(bave::Key::eS) || key_state.is_pressed(bave::Key::eDown)) { direction.y -= 1.0f; }
+	if (key_state.is_pressed(bave::Key::eA) || key_state.is_pressed(bave::Key::eLeft)) { direction.x -= 1.0f; }
+	if (key_state.is_pressed(bave::Key::eD) || key_state.is_pressed(bave::Key::eRight)) { direction.x += 1.0f; }
 
-	// multiply direction * speed * dt
-	if (d_x_y.x != 0.0f || d_x_y.y != 0.0f) {
-		d_x_y = glm::normalize(d_x_y);
-		auto const displacement = d_x_y * speed_v * dt.count();
+	if (direction.x != 0.0f || direction.y != 0.0f) {
+		direction = glm::normalize(direction);
+		auto const displacement = direction * speed_v * dt.count();
 		m_sprite.transform.position += displacement;
 	}
 	handle_wall_collision();
+	// m_physics.position = m_sprite.transform.position;
 }
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
