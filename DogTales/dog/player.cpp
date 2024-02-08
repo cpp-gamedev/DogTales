@@ -1,39 +1,33 @@
 #include <dog/player.hpp>
 
 namespace dog {
-Player::Player(glm::vec2 const world_space) : m_world_space(world_space) { m_sprite.set_size(size_v); }
+Player::Player(bave::App& app, glm::vec2 const world_space) : m_app(app), m_world_space(world_space) {
+	m_sprite.set_size(size_v);
+}
 
 void Player::tick(bave::Seconds const dt) {
 
-	m_physics.tick(dt);
-	m_sprite.transform.position = m_physics.position;
+	// m_physics.tick(dt);
+	// m_sprite.transform.position = m_physics.position;
 
+	// m_physics.position = m_sprite.transform.position;
+	auto const& key_state = m_app.get_key_state();
+	auto d_x_y = glm::vec2{};
+	if (key_state.is_pressed(bave::Key::eW)) { d_x_y.y += 1.0f; }
+	if (key_state.is_pressed(bave::Key::eS)) { d_x_y.y -= 1.0f; }
+	if (key_state.is_pressed(bave::Key::eA)) { d_x_y.x -= 1.0f; }
+	if (key_state.is_pressed(bave::Key::eD)) { d_x_y.x += 1.0f; }
+
+	// multiply direction * speed * dt
+	if (d_x_y.x != 0.0f || d_x_y.y != 0.0f) {
+		d_x_y = glm::normalize(d_x_y);
+		auto const displacement = d_x_y * speed_v * dt.count();
+		m_sprite.transform.position += displacement;
+	}
 	handle_wall_collision();
-	m_physics.position = m_sprite.transform.position;
 }
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
-
-void Player::update_movement(glm::vec2 const& direction) {
-	// Normalize the direction vector
-	// glm::vec2 normalized_direction = glm::normalize(direction);
-
-	// Apply speed to the normalized direction vector
-}
-
-void Player::handle_input(bave::KeyInput const& key_input) {
-	// Mapping keys to direction offsets
-	std::unordered_map<bave::Key, glm::vec2> keyMappings{
-		{bave::Key::eW, {0.0f, 1.0f}},
-		{bave::Key::eA, {-1.0f, 0.0f}},
-		{bave::Key::eS, {0.0f, -1.0f}},
-		{bave::Key::eD, {1.0f, 0.0f}},
-	};
-
-	// Check if the pressed key has a corresponding direction in the map
-	auto it = keyMappings.find(key_input.key);
-	if (it != keyMappings.end()) { update_movement(it->second); }
-}
 
 void Player::handle_wall_collision() {
 	auto& position = m_sprite.transform.position;

@@ -1,7 +1,7 @@
 #include <dog/dogtales.hpp>
 
 namespace dog {
-DogTales::DogTales(bave::App& app) : bave::Driver(app) {}
+DogTales::DogTales(bave::App& app) : bave::Driver(app), m_player(app, world_space_v) {}
 
 void DogTales::tick() {
 	auto const dt = get_app().get_dt();
@@ -18,7 +18,6 @@ void DogTales::render() const {
 
 void DogTales::on_key(bave::KeyInput const& key_input) {
 	// Forward the key input to the player for handling
-	m_player.handle_input(key_input);
 }
 
 void DogTales::set_viewport_to_world_space() const {
