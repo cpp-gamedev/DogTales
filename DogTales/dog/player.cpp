@@ -8,7 +8,6 @@ Player::Player(bave::App& app, glm::vec2 const world_space) : m_app(app), m_worl
 void Player::tick(bave::Seconds const dt) {
 
 	m_physics.tick(dt);
-	m_sprite.transform.position = m_physics.position;
 
 	auto const& key_state = m_app.get_key_state();
 	auto direction = glm::vec2{};
@@ -23,12 +22,13 @@ void Player::tick(bave::Seconds const dt) {
 		m_physics.position += displacement;
 	}
 	handle_wall_collision();
+	m_sprite.transform.position = m_physics.position;
 }
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
 
 void Player::handle_wall_collision() {
-	auto& position = m_sprite.transform.position;
+	auto& position = m_physics.position;
 	// bounce_rect represents the play area for the sprite, ie the limits for its centre.
 	// the size is simply the total space minus the sprite size, centered at the origin.
 	// the second argument (glm::vec2{0.0f}) is the default value and can be omitted here.
