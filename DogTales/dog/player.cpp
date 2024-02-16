@@ -7,8 +7,8 @@ Player::Player(bave::App& app, glm::vec2 const world_space) : m_app(app), m_worl
 
 void Player::tick(bave::Seconds const dt) {
 
-	// m_physics.tick(dt);
-	// m_sprite.transform.position = m_physics.position;
+	m_physics.tick(dt);
+	m_sprite.transform.position = m_physics.position;
 
 	auto const& key_state = m_app.get_key_state();
 	auto direction = glm::vec2{};
@@ -20,10 +20,9 @@ void Player::tick(bave::Seconds const dt) {
 	if (direction.x != 0.0f || direction.y != 0.0f) {
 		direction = glm::normalize(direction);
 		auto const displacement = direction * speed_v * dt.count();
-		m_sprite.transform.position += displacement;
+		m_physics.position += displacement;
 	}
 	handle_wall_collision();
-	// m_physics.position = m_sprite.transform.position;
 }
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }

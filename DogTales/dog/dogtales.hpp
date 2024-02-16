@@ -11,8 +11,6 @@ class DogTales : public bave::Driver {
 	void tick() final;
 	void render() const final;
 
-	void on_key(bave::KeyInput const& key_input) final;
-
 	void set_viewport_to_world_space() const;
 
   public:
