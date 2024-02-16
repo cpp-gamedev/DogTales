@@ -1,21 +1,34 @@
 #include <dog/player.hpp>
 
 namespace dog {
-Player::Player(glm::vec2 const world_space) : m_world_space(world_space) { m_sprite.set_size(size_v); }
+Player::Player(bave::App& app, glm::vec2 const world_space) : m_app(app), m_world_space(world_space) {
+	m_sprite.set_size(size_v);
+}
 
 void Player::tick(bave::Seconds const dt) {
 
 	m_physics.tick(dt);
-	m_sprite.transform.position = m_physics.position;
 
+	auto const& key_state = m_app.get_key_state();
+	auto direction = glm::vec2{};
+	if (key_state.is_pressed(bave::Key::eW) || key_state.is_pressed(bave::Key::eUp)) { direction.y += 1.0f; }
+	if (key_state.is_pressed(bave::Key::eS) || key_state.is_pressed(bave::Key::eDown)) { direction.y -= 1.0f; }
+	if (key_state.is_pressed(bave::Key::eA) || key_state.is_pressed(bave::Key::eLeft)) { direction.x -= 1.0f; }
+	if (key_state.is_pressed(bave::Key::eD) || key_state.is_pressed(bave::Key::eRight)) { direction.x += 1.0f; }
+
+	if (direction.x != 0.0f || direction.y != 0.0f) {
+		direction = glm::normalize(direction);
+		auto const displacement = direction * speed_v * dt.count();
+		m_physics.position += displacement;
+	}
 	handle_wall_collision();
-	m_physics.position = m_sprite.transform.position;
+	m_sprite.transform.position = m_physics.position;
 }
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
 
 void Player::handle_wall_collision() {
-	auto& position = m_sprite.transform.position;
+	auto& position = m_physics.position;
 	// bounce_rect represents the play area for the sprite, ie the limits for its centre.
 	// the size is simply the total space minus the sprite size, centered at the origin.
 	// the second argument (glm::vec2{0.0f}) is the default value and can be omitted here.

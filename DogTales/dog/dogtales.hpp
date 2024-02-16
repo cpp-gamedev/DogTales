@@ -6,12 +6,10 @@ namespace dog {
 class DogTales : public bave::Driver {
 	static constexpr glm::vec2 world_space_v{1280.0f, 720.0f};
 
-	Player m_player{world_space_v};
+	Player m_player;
 
 	void tick() final;
 	void render() const final;
-
-	void on_key(bave::KeyInput const& key_input) final;
 
 	void set_viewport_to_world_space() const;
 
