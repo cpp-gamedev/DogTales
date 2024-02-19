@@ -2,6 +2,7 @@
 #include <bave/app.hpp>
 #include <bave/graphics/sprite.hpp>
 #include "components/physics.hpp"
+#include "player/PlayerController.hpp"
 
 namespace dog {
 class Player {
@@ -15,6 +16,7 @@ class Player {
 	bave::Sprite m_sprite{};
 
 	component::Physics m_physics{};
+	player::PlayerController m_player_controller{};
 
 	void handle_wall_collision();
 
@@ -23,5 +25,7 @@ class Player {
 
 	void tick(bave::Seconds dt);
 	void draw(bave::Shader& shader) const;
+
+	float const get_controller_state(std::string key);
 };
 } // namespace dog

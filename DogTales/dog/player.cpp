@@ -8,13 +8,9 @@ Player::Player(bave::App& app, glm::vec2 const world_space) : m_app(app), m_worl
 void Player::tick(bave::Seconds const dt) {
 
 	m_physics.tick(dt);
+	m_player_controller.tick(dt, m_app);
 
-	auto const& key_state = m_app.get_key_state();
 	auto direction = glm::vec2{};
-	if (key_state.is_pressed(bave::Key::eW) || key_state.is_pressed(bave::Key::eUp)) { direction.y += 1.0f; }
-	if (key_state.is_pressed(bave::Key::eS) || key_state.is_pressed(bave::Key::eDown)) { direction.y -= 1.0f; }
-	if (key_state.is_pressed(bave::Key::eA) || key_state.is_pressed(bave::Key::eLeft)) { direction.x -= 1.0f; }
-	if (key_state.is_pressed(bave::Key::eD) || key_state.is_pressed(bave::Key::eRight)) { direction.x += 1.0f; }
 
 	if (direction.x != 0.0f || direction.y != 0.0f) {
 		direction = glm::normalize(direction);
@@ -26,6 +22,12 @@ void Player::tick(bave::Seconds const dt) {
 }
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
+
+float const Player::get_controller_state(std::string key) {
+	try {
+		return m_player_controller.key_map[key];
+	} catch (std::out_of_range const& oor) { return -1.f; }
+}
 
 void Player::handle_wall_collision() {
 	auto& position = m_physics.position;
