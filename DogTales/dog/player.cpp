@@ -7,10 +7,13 @@ Player::Player(bave::App& app, glm::vec2 const world_space) : m_app(app), m_worl
 
 void Player::tick(bave::Seconds const dt) {
 
-	m_physics.tick(dt);
+	if (physics_enabled) { m_physics.tick(dt); }
 	m_player_controller.tick(dt, m_app);
 
 	auto direction = glm::vec2{};
+
+	direction.x += m_player_controller.get_controller_state("move_x").value();
+	direction.y += m_player_controller.get_controller_state("move_y").value();
 
 	if (direction.x != 0.0f || direction.y != 0.0f) {
 		direction = glm::normalize(direction);
@@ -23,11 +26,7 @@ void Player::tick(bave::Seconds const dt) {
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
 
-float const Player::get_controller_state(std::string key) {
-	try {
-		return m_player_controller.key_map[key];
-	} catch (std::out_of_range const& oor) { return -1.f; }
-}
+std::optional<float> Player::get_controller_state(std::string_view key) const { return m_player_controller.get_controller_state(key); }
 
 void Player::handle_wall_collision() {
 	auto& position = m_physics.position;

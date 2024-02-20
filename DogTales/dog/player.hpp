@@ -16,7 +16,7 @@ class Player {
 	bave::Sprite m_sprite{};
 
 	component::Physics m_physics{};
-	player::PlayerController m_player_controller{};
+	PlayerController m_player_controller{};
 
 	void handle_wall_collision();
 
@@ -26,6 +26,8 @@ class Player {
 	void tick(bave::Seconds dt);
 	void draw(bave::Shader& shader) const;
 
-	float const get_controller_state(std::string key);
+	std::optional<float> get_controller_state(std::string_view key) const;
+
+	bool physics_enabled{}; // for debugging
 };
 } // namespace dog

@@ -1,5 +1,5 @@
-#include <dog/dogtales.hpp>
 #include <bave/imgui/im_text.hpp>
+#include <dog/dogtales.hpp>
 
 namespace dog {
 DogTales::DogTales(bave::App& app) : bave::Driver(app), m_player(app, world_space_v) {}
@@ -7,14 +7,20 @@ DogTales::DogTales(bave::App& app) : bave::Driver(app), m_player(app, world_spac
 void DogTales::tick() {
 	auto const dt = get_app().get_dt();
 
-	//ImGui calls
+	// ImGui calls
 	if constexpr (bave::imgui_v) {
 		if (ImGui::Begin("Debug")) {
-			if(ImGui::BeginTabBar("Main")) {
+			if (ImGui::BeginTabBar("Main")) {
+				if (ImGui::BeginTabItem("General")) {
+					ImGui::Checkbox("Physics", &m_player.physics_enabled);
+					ImGui::EndTabItem();
+				}
 				if (ImGui::BeginTabItem("Player")) {
 					bave::im_text("Controller States");
 					ImGui::Separator();
-					ImGui::Text("Test (Press 'T'): %.2f", m_player.get_controller_state("test"));
+					bave::im_text("move_x (Press A/D or Left/Right): {:.2f}", m_player.get_controller_state("move_x").value());
+					bave::im_text("move_y (Press W/S or Up/Down): {:.2f}", m_player.get_controller_state("move_y").value());
+					bave::im_text("Jump (Press 'E'): {:.2f}", m_player.get_controller_state("jump").value());
 					ImGui::EndTabItem();
 				}
 				ImGui::EndTabBar();
