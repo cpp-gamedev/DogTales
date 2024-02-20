@@ -26,7 +26,9 @@ void Player::tick(bave::Seconds const dt) {
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
 
-std::optional<float> Player::get_controller_state(std::string_view key) const { return m_player_controller.get_controller_state(key); }
+std::optional<float> Player::get_controller_state(std::string_view key) const {
+	return m_player_controller.get_controller_state(key);
+}
 
 void Player::handle_wall_collision() {
 	auto& position = m_physics.position;

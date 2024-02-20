@@ -18,8 +18,10 @@ void DogTales::tick() {
 				if (ImGui::BeginTabItem("Player")) {
 					bave::im_text("Controller States");
 					ImGui::Separator();
-					bave::im_text("move_x (Press A/D or Left/Right): {:.2f}", m_player.get_controller_state("move_x").value());
-					bave::im_text("move_y (Press W/S or Up/Down): {:.2f}", m_player.get_controller_state("move_y").value());
+					bave::im_text("move_x (Press A/D or Left/Right): {:.2f}",
+								  m_player.get_controller_state("move_x").value());
+					bave::im_text("move_y (Press W/S or Up/Down): {:.2f}",
+								  m_player.get_controller_state("move_y").value());
 					bave::im_text("Jump (Press 'E'): {:.2f}", m_player.get_controller_state("jump").value());
 					ImGui::EndTabItem();
 				}
