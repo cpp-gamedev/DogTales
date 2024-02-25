@@ -1,7 +1,8 @@
 #pragma once
 #include <bave/app.hpp>
 #include <bave/graphics/sprite.hpp>
-#include "components/physics.hpp"
+#include <dog/components/physics.hpp>
+#include <dog/player/player_controller.hpp>
 
 namespace dog {
 class Player {
@@ -15,6 +16,7 @@ class Player {
 	bave::Sprite m_sprite{};
 
 	component::Physics m_physics{};
+	PlayerController m_player_controller{&m_app};
 
 	void handle_wall_collision();
 
@@ -23,5 +25,9 @@ class Player {
 
 	void tick(bave::Seconds dt);
 	void draw(bave::Shader& shader) const;
+
+	float get_controller_state(std::string_view key) const;
+
+	bool physics_enabled{}; // for debugging
 };
 } // namespace dog

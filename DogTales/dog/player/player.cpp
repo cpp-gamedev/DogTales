@@ -1,20 +1,24 @@
-#include <dog/player.hpp>
+#include <dog/player/player.hpp>
 
 namespace dog {
 Player::Player(bave::App& app, glm::vec2 const world_space) : m_app(app), m_world_space(world_space) {
 	m_sprite.set_size(size_v);
+
+	m_player_controller.bind_throttle("move_x", {.lo = bave::Key::eLeft, .hi = bave::Key::eRight});
+	m_player_controller.bind_throttle("move_x", {.lo = bave::Key::eA, .hi = bave::Key::eD});
+	m_player_controller.bind_throttle("move_y", {.lo = bave::Key::eDown, .hi = bave::Key::eUp});
+	m_player_controller.bind_throttle("move_y", {.lo = bave::Key::eS, .hi = bave::Key::eW});
+	m_player_controller.bind_key("jump", bave::Key::eSpace);
 }
 
 void Player::tick(bave::Seconds const dt) {
 
-	m_physics.tick(dt);
+	if (physics_enabled) { m_physics.tick(dt); }
 
-	auto const& key_state = m_app.get_key_state();
 	auto direction = glm::vec2{};
-	if (key_state.is_pressed(bave::Key::eW) || key_state.is_pressed(bave::Key::eUp)) { direction.y += 1.0f; }
-	if (key_state.is_pressed(bave::Key::eS) || key_state.is_pressed(bave::Key::eDown)) { direction.y -= 1.0f; }
-	if (key_state.is_pressed(bave::Key::eA) || key_state.is_pressed(bave::Key::eLeft)) { direction.x -= 1.0f; }
-	if (key_state.is_pressed(bave::Key::eD) || key_state.is_pressed(bave::Key::eRight)) { direction.x += 1.0f; }
+
+	direction.x += m_player_controller.get_state("move_x");
+	direction.y += m_player_controller.get_state("move_y");
 
 	if (direction.x != 0.0f || direction.y != 0.0f) {
 		direction = glm::normalize(direction);
@@ -26,6 +30,8 @@ void Player::tick(bave::Seconds const dt) {
 }
 
 void Player::draw(bave::Shader& shader) const { m_sprite.draw(shader); }
+
+float Player::get_controller_state(std::string_view key) const { return m_player_controller.get_state(key); }
 
 void Player::handle_wall_collision() {
 	auto& position = m_physics.position;
